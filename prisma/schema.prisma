@@ -23,14 +23,15 @@ model Users {
   updatedAt     DateTime        @updatedAt
   OAuthProvider OAuthProvider[]
   Project       Project[]
-  refreshTokens RefreshTokens[]
+  Tokens        Tokens[]
 }
 
-model RefreshTokens {
+model Tokens {
   id String @id @default(uuid())
   user  Users @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
-  token String @unique
+  accessToken String @unique
+  refreshToken String @unique
   isRevoked Boolean @default(false)
   createdAt DateTime @default(now())
   expiresAt DateTime

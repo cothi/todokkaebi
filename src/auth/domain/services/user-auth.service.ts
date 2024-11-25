@@ -1,36 +1,87 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  IUserAuthRepositoryGeneric,
-  PrismaUserAuthRepositoryArgs,
-} from '@src/auth/domain/interface/user-repository.interface';
-import { UserRepositorySymbol } from '@src/user/domain/interface/user-repository.interface';
-import { UserModel } from '@src/auth/domain/model/user.model';
-import { LoginDto } from '@src/auth/domain/model/login-user.model';
+  ITokensRepositoryGeneric,
+  PrismaTokenRepositoryArgs,
+  TokenRepositorySymbol,
+} from '@src/auth/domain/interface/token-repository.interface';
+import {
+  IUserRepositoryGeneric,
+  PrismaUserRepositoryArgs,
+  UserRepositorySymbol,
+} from '@src/user/domain/interface/user-repository.interface';
 import { ErrorCode, errorFactory } from '@libs/exception';
 
 @Injectable()
 export class UserAuthService {
   constructor(
-    @Inject(UserRepositorySymbol)
-    private readonly userRepository: IUserAuthRepositoryGeneric<PrismaUserAuthRepositoryArgs>,
-  ) {}
+    @Inject(TokenRepositorySymbol)
+    private readonly tokenRepository: ITokensRepositoryGeneric<PrismaTokenRepositoryArgs>,
 
-  async authenticate(dto: LoginDto): Promise<UserModel> {
+    @Inject(UserRepositorySymbol)
+    private readonly userRepository: IUserRepositoryGeneric<PrismaUserRepositoryArgs>,
+  ) {}
+  async authenticate(email: string, password: string): Promise<boolean> {
     const user = await this.userRepository.findUser({
       where: {
-        email: dto.email,
+        email,
       },
     });
     if (!user) {
-      throw errorFactory(ErrorCode.USER_NOT_FOUND);
+      throw errorFactory(ErrorCode.UNAUTHORIZED);
     }
 
-    if (user.password !== dto.password) {
-      throw errorFactory(ErrorCode.VALIDATION_ERROR);
+    if (password !== user.password) {
+      throw errorFactory(ErrorCode.UNAUTHORIZED);
     }
-
-    return user;
+    return true;
   }
-  async logout(userId: string) {}
-  async storeToken() {}
+  async refreshToken(accessToken: string, refreshToken: string): Promise<void> {
+    const token = await this.tokenRepository.updateToken({
+      where: {
+        refreshToken,
+      },
+      data: {
+        accessToken,
+      },
+    });
+    if (token.accessToken !== accessToken) {
+      throw errorFactory(ErrorCode.INVALID_INPUT);
+    }
+  }
+  async logout(accessToken: string): Promise<void> {
+    const token = await this.tokenRepository.updateToken({
+      where: {
+        accessToken,
+      },
+      data: {
+        isRevoked: false,
+      },
+    });
+
+    if (!token.isRevoked) {
+      throw errorFactory(ErrorCode.INVALID_INPUT);
+    }
+  }
+
+  async validateRefreshToken(refreshToken: string): Promise<void> {
+    const token = await this.tokenRepository.findToken({
+      where: {
+        refreshToken,
+      },
+    });
+    if (!token || token.isRevoked) {
+      throw errorFactory(ErrorCode.INVALID_TOKEN);
+    }
+  }
+
+  async validateAccessToken(accessToken: string): Promise<void> {
+    const token = await this.tokenRepository.findToken({
+      where: {
+        accessToken,
+      },
+    });
+    if (!token || token.isRevoked) {
+      throw errorFactory(ErrorCode.INVALID_TOKEN);
+    }
+  }
 }

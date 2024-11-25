@@ -1,8 +1,8 @@
-import { User } from '@prisma/client';
+import { Users } from '@prisma/client';
 import { UserModel } from '@src/user/domain/model/user.model';
 
 export class UserMapper {
-  static fromPrismaToDomain(user: User): UserModel {
+  static fromPrismaToDomain(user: Users): UserModel {
     return UserModel.create({
       email: user.email ?? undefined,
       password: user.password,

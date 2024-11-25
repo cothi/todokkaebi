@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { UserModel } from '@src/auth/domain/model/user.model';
+import { UserModel } from '@src/user/domain/model/user.model';
 
 export const UserRepositorySymbol = Symbol.for('UserRepository');
 
@@ -13,10 +13,10 @@ export interface IUserRepository {
 
 // Prisma를 사용하는 UserRepository 인터페이스
 export type PrismaUserRepositoryArgs = {
-  createUser: Prisma.UserCreateArgs;
-  updateUser: Prisma.UserUpdateArgs;
-  deleteUser: Prisma.UserDeleteArgs;
-  findUser: Prisma.UserFindFirstArgs;
+  createUser: Prisma.UsersCreateArgs;
+  updateUser: Prisma.UsersUpdateArgs;
+  deleteUser: Prisma.UsersDeleteArgs;
+  findUser: Prisma.UsersFindFirstArgs;
 };
 
 // 제너릭을 활용한 유연한 UserRepository 인터페이스

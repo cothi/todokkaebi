@@ -1,16 +1,16 @@
 import { Mutation, Resolver } from '@nestjs/graphql';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { UserModel } from '@src/auth/domain/model/user.model';
 
-@Resolver(() => UserModel)
+@Resolver()
 export class UserAuthResolver {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
   ) {}
 
-  @Mutation(() => )
+  @Mutation()
   async login() {}
 
+  @Mutation()
   async logout() {}
 }
