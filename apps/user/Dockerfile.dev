@@ -1,0 +1,13 @@
+# Node.js 런타임을 베이스 이미지로 사용
+FROM node:18 AS development
+
+# 작업 디렉토리
+WORKDIR /app
+
+COPY package*.json package-lock.json ./
+
+RUN npm install
+
+RUN npx prisma generate
+
+CMD ["npm", "run", "start:user:dev"]

@@ -1,0 +1,28 @@
+services:
+  user-service:
+    build:
+      context: .
+      dockerfile: ./apps/user/Dockerfile.dev
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/app
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: "mysql://root:rootpassword@db:3306/exampledb?schema=user"  # localhost:5555 -> db:3306
+    command: sh -c "npx prisma migrate dev --schema=apps/user/src/infrastructure/prisma/schema.prisma -n 1 && npm run start:user:dev"
+    depends_on:
+      - db
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: 'exampledb'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'rootpassword'
+    ports:
+      - '3306:3306'
+    volumes:
+      - 'mysqldata:/var/lib/mysql'
+volumes:
+  mysqldata:

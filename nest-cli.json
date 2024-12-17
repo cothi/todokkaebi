@@ -1,10 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
+  "sourceRoot": "apps/todogebi/src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "webpack": true
+    "webpack": true,
+    "tsConfigPath": "apps/todogebi/tsconfig.app.json"
   },
   "projects": {
     "decorators": {
@@ -15,6 +16,35 @@
       "compilerOptions": {
         "tsConfigPath": "libs/decorators/tsconfig.lib.json"
       }
+    },
+    "todogebi": {
+      "type": "application",
+      "root": "apps/todogebi",
+      "entryFile": "main",
+      "sourceRoot": "apps/todogebi/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/todogebi/tsconfig.app.json"
+      }
+    },
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json"
+      }
+    },
+    "user": {
+      "type": "application",
+      "root": "apps/user",
+      "entryFile": "main",
+      "sourceRoot": "apps/user/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user/tsconfig.app.json"
+      }
     }
-  }
+  },
+  "monorepo": true,
+  "root": "."
 }

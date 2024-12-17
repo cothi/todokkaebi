@@ -18,13 +18,12 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@src": [
-        "src"
+      "@user": [
+        "apps/user/src"
       ],
-      "@src/*": [
-        "src/*"
+      "@user/*": [
+        "apps/user/src/*"
       ],
-
       "@libs/decorators": [
         "libs/decorators/src"
       ],
@@ -85,7 +84,6 @@
       "@libs/response/*": [
         "libs/response/src/*"
       ]
-    },
-
+    }
   }
 }

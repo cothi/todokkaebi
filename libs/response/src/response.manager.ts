@@ -1,12 +1,12 @@
 import { HttpStatus } from '@nestjs/common';
-import { ResponseObj } from './reponose.object';
+import { ApiResponse } from '@libs/response/reponose.object';
 
 export class ResponseManager {
-  static from<T>(
-    data: T,
-    status = HttpStatus.OK,
+  static create<T>(
+    data?: T,
+    status: HttpStatus = HttpStatus.OK,
     message?: string,
-  ): ResponseObj<T> {
+  ): ApiResponse<T> {
     return {
       data,
       status,
